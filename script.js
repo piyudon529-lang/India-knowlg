@@ -1,4 +1,4 @@
-const questions = [
+ const questions = [
   {
     q: "भारत की राजधानी क्या है?",
     a: ["दिल्ली", "मुंबई", "भोपाल", "जयपुर"],
@@ -53,15 +53,20 @@ const questions = [
 
 let current = 0;
 let score = 0;
+let answered = false;
 
 function loadQuestion() {
   const question = questions[current];
 
   document.getElementById("question").textContent =
-    (current + 1) + ". " + question.q;
+    (current + 1) + "/10. " + question.q;
 
   const optionsBox = document.getElementById("options");
   optionsBox.innerHTML = "";
+
+  document.getElementById("result").textContent = "";
+
+  answered = false;
 
   question.a.forEach(function(option, index) {
 
@@ -71,21 +76,37 @@ function loadQuestion() {
 
     button.onclick = function() {
 
+      if (answered) return;
+
+      answered = true;
+
+      const buttons = document.querySelectorAll("#options button");
+
+      buttons.forEach(function(btn) {
+        btn.disabled = true;
+      });
+
       if (index === question.correct) {
+
         score++;
+
+        button.style.background = "#4CAF50";
+        button.style.color = "white";
 
         document.getElementById("result").textContent =
           "✅ सही जवाब!";
+
       } else {
+
+        button.style.background = "#f44336";
+        button.style.color = "white";
+
+        buttons[question.correct].style.background = "#4CAF50";
+        buttons[question.correct].style.color = "white";
+
         document.getElementById("result").textContent =
           "❌ गलत जवाब!";
       }
-
-      document
-        .querySelectorAll("#options button")
-        .forEach(function(btn) {
-          btn.disabled = true;
-        });
     };
 
     optionsBox.appendChild(button);
@@ -94,11 +115,15 @@ function loadQuestion() {
 
 function nextQuestion() {
 
+  if (!answered) {
+    document.getElementById("result").textContent =
+      "⚠️ पहले एक जवाब चुनो!";
+    return;
+  }
+
   current++;
 
   if (current < questions.length) {
-
-    document.getElementById("result").textContent = "";
 
     loadQuestion();
 
@@ -109,13 +134,26 @@ function nextQuestion() {
 
     document.getElementById("options").innerHTML = "";
 
-    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("result").innerHTML =
+      "🏆 आपका Score: " + score + " / 10" +
+      "<br><br>" +
+      '<button onclick="restartQuiz()">🔄 Restart Quiz</button>';
 
-    document.getElementById("result").textContent =
-      "🏆 आपका Score: " + score + " / 10";
+    document.getElementById("nextBtn").style.display = "none";
   }
 }
 
+function restartQuiz() {
+
+  current = 0;
+  score = 0;
+
+  document.getElementById("nextBtn").style.display = "block";
+
+  loadQuestion();
+}
+
 window.nextQuestion = nextQuestion;
+window.restartQuiz = restartQuiz;
 
 loadQuestion();
