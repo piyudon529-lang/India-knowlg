@@ -66,27 +66,22 @@ function updateProgress() {
 }
 
 function startTimer() {
-
   clearInterval(timer);
-
   timeLeft = 15;
 
   document.getElementById("result").textContent =
     "⏱️ समय: " + timeLeft + " सेकंड";
 
   timer = setInterval(function() {
-
     timeLeft--;
 
     document.getElementById("result").textContent =
       "⏱️ समय: " + timeLeft + " सेकंड";
 
     if (timeLeft <= 0) {
-
       clearInterval(timer);
 
       if (!answered) {
-
         answered = true;
 
         document.getElementById("result").textContent =
@@ -98,17 +93,13 @@ function startTimer() {
             btn.disabled = true;
           });
 
-        setTimeout(function() {
-          nextQuestion();
-        }, 1000);
+        setTimeout(nextQuestion, 1000);
       }
     }
-
   }, 1000);
 }
 
 function loadQuestion() {
-
   clearInterval(timer);
 
   const question = questions[current];
@@ -119,23 +110,19 @@ function loadQuestion() {
     (current + 1) + "/10. " + question.q;
 
   const optionsBox = document.getElementById("options");
-
   optionsBox.innerHTML = "";
 
   answered = false;
 
   question.a.forEach(function(option, index) {
-
     const button = document.createElement("button");
 
     button.textContent = option;
 
     button.onclick = function() {
-
       if (answered) return;
 
       answered = true;
-
       clearInterval(timer);
 
       const buttons =
@@ -146,7 +133,6 @@ function loadQuestion() {
       });
 
       if (index === question.correct) {
-
         score++;
 
         button.style.background = "#4CAF50";
@@ -154,17 +140,12 @@ function loadQuestion() {
 
         document.getElementById("result").textContent =
           "✅ सही जवाब!";
-
       } else {
-
         button.style.background = "#f44336";
         button.style.color = "white";
 
-        buttons[question.correct].style.background =
-          "#4CAF50";
-
-        buttons[question.correct].style.color =
-          "white";
+        buttons[question.correct].style.background = "#4CAF50";
+        buttons[question.correct].style.color = "white";
 
         document.getElementById("result").textContent =
           "❌ गलत जवाब!";
@@ -178,42 +159,55 @@ function loadQuestion() {
 }
 
 function nextQuestion() {
-
   clearInterval(timer);
 
   current++;
 
   if (current < questions.length) {
-
     loadQuestion();
-
   } else {
-
-    document.getElementById("question").textContent =
-      "🎉 Quiz Complete!";
-
-    document.getElementById("progress").textContent =
-      "Quiz Finished";
-
-    document.getElementById("progressFill").style.width =
-      "100%";
-
-    document.getElementById("options").innerHTML = "";
-
-    document.getElementById("nextBtn").style.display =
-      "none";
-
-    let percentage = (score / questions.length) * 100;
-
-    document.getElementById("result").innerHTML =
-      "🏆 आपका Score: " + score + " / " + questions.length +
-      "<br>📊 Percentage: " + percentage + "%" +
-      '<br><br><button onclick="restartQuiz()">🔄 Restart Quiz</button>';
+    showResult();
   }
 }
 
-function restartQuiz() {
+function showResult() {
+  clearInterval(timer);
 
+  const percentage =
+    Math.round((score / questions.length) * 100);
+
+  let message = "";
+
+  if (percentage >= 80) {
+    message = "🌟 बहुत बढ़िया!";
+  } else if (percentage >= 50) {
+    message = "👍 अच्छा प्रयास!";
+  } else {
+    message = "💪 फिर से कोशिश करो!";
+  }
+
+  document.getElementById("question").innerHTML =
+    "🎉 Quiz Complete!";
+
+  document.getElementById("progress").textContent =
+    "🏆 Final Result";
+
+  document.getElementById("progressFill").style.width =
+    "100%";
+
+  document.getElementById("options").innerHTML = "";
+
+  document.getElementById("nextBtn").style.display =
+    "none";
+
+  document.getElementById("result").innerHTML =
+    "🏆 Score: " + score + " / " + questions.length +
+    "<br><br>📊 Percentage: " + percentage + "%" +
+    "<br><br>" + message +
+    '<br><br><button onclick="restartQuiz()">🔄 Play Again</button>';
+}
+
+function restartQuiz() {
   clearInterval(timer);
 
   current = 0;
