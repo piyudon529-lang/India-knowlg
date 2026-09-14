@@ -1,0 +1,10 @@
+{
+  "name": "GK Quiz",
+  "short_name": "GK Quiz",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "description": "भारत का मजेदार GK Quiz App",
+  "icons": []
+}
