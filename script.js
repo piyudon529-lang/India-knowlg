@@ -211,3 +211,8 @@ window.nextQuestion = nextQuestion;
 window.restartQuiz = restartQuiz;
 
 loadQuestion();
+document.getElementById("progress").textContent =
+  "Question " + (current + 1) + " / " + questions.length;
+
+document.getElementById("progressFill").style.width =
+  ((current + 1) / questions.length * 100) + "%";
