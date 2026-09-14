@@ -57,6 +57,14 @@ let answered = false;
 let timeLeft = 15;
 let timer;
 
+function updateProgress() {
+  document.getElementById("progress").textContent =
+    "Question " + (current + 1) + " / " + questions.length;
+
+  document.getElementById("progressFill").style.width =
+    ((current + 1) / questions.length * 100) + "%";
+}
+
 function startTimer() {
 
   clearInterval(timer);
@@ -104,6 +112,8 @@ function loadQuestion() {
   clearInterval(timer);
 
   const question = questions[current];
+
+  updateProgress();
 
   document.getElementById("question").textContent =
     (current + 1) + "/10. " + question.q;
@@ -182,15 +192,23 @@ function nextQuestion() {
     document.getElementById("question").textContent =
       "🎉 Quiz Complete!";
 
+    document.getElementById("progress").textContent =
+      "Quiz Finished";
+
+    document.getElementById("progressFill").style.width =
+      "100%";
+
     document.getElementById("options").innerHTML = "";
 
     document.getElementById("nextBtn").style.display =
       "none";
 
+    let percentage = (score / questions.length) * 100;
+
     document.getElementById("result").innerHTML =
-      "🏆 आपका Score: " + score + " / 10" +
-      "<br><br>" +
-      '<button onclick="restartQuiz()">🔄 Restart Quiz</button>';
+      "🏆 आपका Score: " + score + " / " + questions.length +
+      "<br>📊 Percentage: " + percentage + "%" +
+      '<br><br><button onclick="restartQuiz()">🔄 Restart Quiz</button>';
   }
 }
 
@@ -211,8 +229,3 @@ window.nextQuestion = nextQuestion;
 window.restartQuiz = restartQuiz;
 
 loadQuestion();
-document.getElementById("progress").textContent =
-  "Question " + (current + 1) + " / " + questions.length;
-
-document.getElementById("progressFill").style.width =
-  ((current + 1) / questions.length * 100) + "%";
