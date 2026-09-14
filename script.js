@@ -1,4 +1,4 @@
- const questions = [
+const questions = [
   {
     q: "भारत की राजधानी क्या है?",
     a: ["दिल्ली", "मुंबई", "भोपाल", "जयपुर"],
@@ -54,17 +54,63 @@
 let current = 0;
 let score = 0;
 let answered = false;
+let timeLeft = 15;
+let timer;
+
+function startTimer() {
+
+  clearInterval(timer);
+
+  timeLeft = 15;
+
+  document.getElementById("result").textContent =
+    "⏱️ समय: " + timeLeft + " सेकंड";
+
+  timer = setInterval(function() {
+
+    timeLeft--;
+
+    document.getElementById("result").textContent =
+      "⏱️ समय: " + timeLeft + " सेकंड";
+
+    if (timeLeft <= 0) {
+
+      clearInterval(timer);
+
+      if (!answered) {
+
+        answered = true;
+
+        document.getElementById("result").textContent =
+          "⏰ समय समाप्त!";
+
+        document
+          .querySelectorAll("#options button")
+          .forEach(function(btn) {
+            btn.disabled = true;
+          });
+
+        setTimeout(function() {
+          nextQuestion();
+        }, 1000);
+      }
+    }
+
+  }, 1000);
+}
 
 function loadQuestion() {
+
+  clearInterval(timer);
+
   const question = questions[current];
 
   document.getElementById("question").textContent =
     (current + 1) + "/10. " + question.q;
 
   const optionsBox = document.getElementById("options");
-  optionsBox.innerHTML = "";
 
-  document.getElementById("result").textContent = "";
+  optionsBox.innerHTML = "";
 
   answered = false;
 
@@ -80,7 +126,10 @@ function loadQuestion() {
 
       answered = true;
 
-      const buttons = document.querySelectorAll("#options button");
+      clearInterval(timer);
+
+      const buttons =
+        document.querySelectorAll("#options button");
 
       buttons.forEach(function(btn) {
         btn.disabled = true;
@@ -101,8 +150,11 @@ function loadQuestion() {
         button.style.background = "#f44336";
         button.style.color = "white";
 
-        buttons[question.correct].style.background = "#4CAF50";
-        buttons[question.correct].style.color = "white";
+        buttons[question.correct].style.background =
+          "#4CAF50";
+
+        buttons[question.correct].style.color =
+          "white";
 
         document.getElementById("result").textContent =
           "❌ गलत जवाब!";
@@ -111,15 +163,13 @@ function loadQuestion() {
 
     optionsBox.appendChild(button);
   });
+
+  startTimer();
 }
 
 function nextQuestion() {
 
-  if (!answered) {
-    document.getElementById("result").textContent =
-      "⚠️ पहले एक जवाब चुनो!";
-    return;
-  }
+  clearInterval(timer);
 
   current++;
 
@@ -134,21 +184,25 @@ function nextQuestion() {
 
     document.getElementById("options").innerHTML = "";
 
+    document.getElementById("nextBtn").style.display =
+      "none";
+
     document.getElementById("result").innerHTML =
       "🏆 आपका Score: " + score + " / 10" +
       "<br><br>" +
       '<button onclick="restartQuiz()">🔄 Restart Quiz</button>';
-
-    document.getElementById("nextBtn").style.display = "none";
   }
 }
 
 function restartQuiz() {
 
+  clearInterval(timer);
+
   current = 0;
   score = 0;
 
-  document.getElementById("nextBtn").style.display = "block";
+  document.getElementById("nextBtn").style.display =
+    "block";
 
   loadQuestion();
 }
